@@ -161,7 +161,7 @@ def compute_relative_volume(df: pd.DataFrame, period: int = 20) -> Optional[floa
     """Current bar volume / mean of last N bars."""
     if len(df) < period + 1:
         return None
-    avg_vol = float(df["volume"].iloc[-(period + 1): -1].mean())
+    avg_vol = float(df["volume"].iloc[-(period + 1) : -1].mean())
     cur_vol = float(df["volume"].iloc[-1])
     if avg_vol == 0:
         return None
@@ -223,8 +223,8 @@ async def compute_indicators(symbol: str, exchange: str) -> Dict:
         "bb_lower": bb_vals["lower"],
         "vol_stddev": compute_rolling_volatility(df_5m),
         "rel_volume": compute_relative_volume(df_5m),
-        "slope_1d": compute_slope_theta(df_5m, lookback=78),    # ~1 day of 5m bars
-        "slope_1w": compute_slope_theta(df_1d, lookback=5),     # 5 daily bars
+        "slope_1d": compute_slope_theta(df_5m, lookback=78),  # ~1 day of 5m bars
+        "slope_1w": compute_slope_theta(df_1d, lookback=5),  # 5 daily bars
     }
 
     # Cache for 60 seconds
@@ -236,7 +236,7 @@ async def compute_indicators(symbol: str, exchange: str) -> Dict:
 #  Batch computation for screener
 # ─────────────────────────────────────────────────────────
 async def compute_indicators_batch(
-    symbols: list[tuple[str, str]]  # [(symbol, exchange), ...]
+    symbols: list[tuple[str, str]],  # [(symbol, exchange), ...]
 ) -> Dict[str, Dict]:
     """
     Compute indicators for multiple symbols concurrently.

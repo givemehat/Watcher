@@ -58,7 +58,9 @@ class ConnectionManager:
     def disconnect(self, cid: int):
         self._connections.pop(cid, None)
         self._subscriptions.pop(cid, None)
-        logger.info("WS client %d disconnected (total: %d)", cid, len(self._connections))
+        logger.info(
+            "WS client %d disconnected (total: %d)", cid, len(self._connections)
+        )
 
     def subscribe(self, cid: int, symbols: list[str]):
         if cid in self._subscriptions:
@@ -177,7 +179,9 @@ async def websocket_market(ws: WebSocket):
                     json.dumps({"type": "ack", "unsubscribed": msg.symbols})
                 )
             else:
-                error = WSErrorMsg(message=f"Unknown action: {msg.action}").model_dump_json()
+                error = WSErrorMsg(
+                    message=f"Unknown action: {msg.action}"
+                ).model_dump_json()
                 await ws.send_text(error)
 
     except WebSocketDisconnect:

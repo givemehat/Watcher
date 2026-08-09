@@ -21,9 +21,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "https://stockiq.app"]
 
     # ── PostgreSQL / TimescaleDB ──────────────────────────
-    DATABASE_URL: str = (
-        "postgresql+asyncpg://stockiq:stockiq@localhost:5432/stockiq"
-    )
+    DATABASE_URL: str = "postgresql+asyncpg://stockiq:stockiq@localhost:5432/stockiq"
     DB_MIN_POOL: int = 5
     DB_MAX_POOL: int = 20
 
@@ -42,7 +40,7 @@ class Settings(BaseSettings):
     # ── Zerodha Kite Connect ──────────────────────────────
     KITE_API_KEY: str = ""
     KITE_API_SECRET: str = ""
-    KITE_ACCESS_TOKEN: str = ""          # refresh via OAuth daily
+    KITE_ACCESS_TOKEN: str = ""  # refresh via OAuth daily
 
     # ── Upstox ───────────────────────────────────────────
     UPSTOX_API_KEY: str = ""
@@ -51,12 +49,12 @@ class Settings(BaseSettings):
 
     # ── Yahoo Finance fallback ────────────────────────────
     YAHOO_FALLBACK_ENABLED: bool = True
-    YAHOO_REFRESH_SECONDS: int = 15      # delayed / backup
+    YAHOO_REFRESH_SECONDS: int = 15  # delayed / backup
 
     # ── News sources ──────────────────────────────────────
     NEWS_REFRESH_SECONDS: int = 120
     NEWS_MAX_ITEMS: int = 200
-    GNEWS_API_KEY: str = ""              # GNews or NewsAPI
+    GNEWS_API_KEY: str = ""  # GNews or NewsAPI
     NEWSAPI_KEY: str = ""
 
     # ── R analytics microservice ──────────────────────────
@@ -68,7 +66,7 @@ class Settings(BaseSettings):
     JULIA_SERVICE_TIMEOUT: float = 30.0
 
     # ── TimescaleDB-specific ──────────────────────────────
-    TS_RETENTION_DAYS: int = 365         # hypertable retention policy
+    TS_RETENTION_DAYS: int = 365  # hypertable retention policy
     TS_CHUNK_INTERVAL: str = "1 day"
 
 

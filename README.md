@@ -1,5 +1,13 @@
 # 📈 StockIQ – Indian Market Intelligence Platform
 
+<div align="center">
+  <img src="https://img.shields.io/github/repo-size/givemehat/Watcher?style=for-the-badge&color=blue" alt="Repository Size" />
+  <img src="https://img.shields.io/github/license/givemehat/Watcher?style=for-the-badge&color=green" alt="License" />
+  <img src="https://img.shields.io/github/commit-activity/m/givemehat/Watcher?style=for-the-badge&color=orange" alt="Commit Activity" />
+  <img src="https://img.shields.io/github/last-commit/givemehat/Watcher?style=for-the-badge&color=red" alt="Last Commit" />
+</div>
+
+
 StockIQ is a high-performance, asynchronous market intelligence and analytics engine designed for the Indian equity markets (NSE/BSE). Built using Python 3.11+ and FastAPI, the platform processes real-time ticketing feeds, runs complex analytical screening workflows, and broadcasts streaming updates to consumers via WebSockets.
 
 ---

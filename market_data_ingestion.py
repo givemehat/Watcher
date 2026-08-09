@@ -104,9 +104,7 @@ class KiteIngestionAdapter:
     def _on_ticks(self, ws, ticks: List[dict]):
         """Called by KiteTicker in its own thread; bridge to asyncio."""
         loop = asyncio.get_event_loop()
-        asyncio.run_coroutine_threadsafe(
-            self._process_ticks(ticks), loop
-        )
+        asyncio.run_coroutine_threadsafe(self._process_ticks(ticks), loop)
 
     async def _process_ticks(self, ticks: List[dict]):
         pipeline = []
@@ -177,7 +175,10 @@ class YahooFallbackPoller:
         loop = asyncio.get_event_loop()
         tickers_str = " ".join(self.SYMBOLS_NSE)
         data = await loop.run_in_executor(
-            None, lambda: yf.download(tickers_str, period="1d", interval="1m", progress=False)
+            None,
+            lambda: yf.download(
+                tickers_str, period="1d", interval="1m", progress=False
+            ),
         )
         if data.empty:
             return
@@ -261,9 +262,16 @@ async def _persist_ticks(ticks: List[StockTick]):
         return
     rows = [
         (
-            t.timestamp, t.symbol, t.exchange.value,
-            t.ltp, t.open, t.high, t.low, t.close,
-            t.volume, t.change_pct_day,
+            t.timestamp,
+            t.symbol,
+            t.exchange.value,
+            t.ltp,
+            t.open,
+            t.high,
+            t.low,
+            t.close,
+            t.volume,
+            t.change_pct_day,
         )
         for t in ticks
     ]
@@ -295,6 +303,7 @@ class MarketDataIngestionService:
         if settings.KITE_API_KEY and settings.KITE_ACCESS_TOKEN:
             try:
                 from kiteconnect import KiteConnect
+
                 kite = KiteConnect(api_key=settings.KITE_API_KEY)
                 kite.set_access_token(settings.KITE_ACCESS_TOKEN)
                 await self.registry.load(kite)
@@ -303,7 +312,9 @@ class MarketDataIngestionService:
                 kite_ok = True
                 logger.info("Kite Connect ingestion active")
             except Exception as exc:
-                logger.warning("Kite Connect unavailable: %s – switching to fallback", exc)
+                logger.warning(
+                    "Kite Connect unavailable: %s – switching to fallback", exc
+                )
 
         if not kite_ok and settings.YAHOO_FALLBACK_ENABLED:
             logger.info("Using Yahoo Finance fallback poller")

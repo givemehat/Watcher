@@ -33,10 +33,10 @@ router = APIRouter()
 
 # Price range presets (min_price, max_price)
 PRICE_RANGE_MAP = {
-    PriceRange.MICRO:  (0.0,    20.0),
-    PriceRange.SMALL:  (20.0,   100.0),
-    PriceRange.MID:    (100.0,  500.0),
-    PriceRange.LARGE:  (500.0,  1000.0),
+    PriceRange.MICRO: (0.0, 20.0),
+    PriceRange.SMALL: (20.0, 100.0),
+    PriceRange.MID: (100.0, 500.0),
+    PriceRange.LARGE: (500.0, 1000.0),
 }
 
 
@@ -73,8 +73,8 @@ def _build_query(f: ScreenerFilter) -> tuple[str, list]:
 
     # ── Momentum / change % ────────────────────────────────
     change_col = {
-        "1m":  "change_pct_1m",
-        "5m":  "change_pct_5m",
+        "1m": "change_pct_1m",
+        "5m": "change_pct_5m",
         "15m": "change_pct_15m",
         "day": "change_pct_day",
     }.get(f.window, "change_pct_day")
@@ -98,8 +98,14 @@ def _build_query(f: ScreenerFilter) -> tuple[str, list]:
 
     # ── Sort ──────────────────────────────────────────────
     safe_sort = {
-        "change_pct_day", "change_pct_5m", "change_pct_15m",
-        "ltp", "volume", "rsi_14", "atr_14", "rel_volume",
+        "change_pct_day",
+        "change_pct_5m",
+        "change_pct_15m",
+        "ltp",
+        "volume",
+        "rsi_14",
+        "atr_14",
+        "rel_volume",
     }
     sort_col = f.sort_by if f.sort_by in safe_sort else "change_pct_day"
     sort_dir = "DESC" if f.sort_desc else "ASC"
@@ -128,22 +134,30 @@ def _build_query(f: ScreenerFilter) -> tuple[str, list]:
 # ─────────────────────────────────────────────────────────
 #  Post-SQL filters (indicators not in materialized view)
 # ─────────────────────────────────────────────────────────
-def _apply_post_filters(quotes: List[StockQuote], f: ScreenerFilter) -> List[StockQuote]:
+def _apply_post_filters(
+    quotes: List[StockQuote], f: ScreenerFilter
+) -> List[StockQuote]:
     result = []
     for q in quotes:
         if f.rsi_min is not None and (q.rsi_14 is None or q.rsi_14 < f.rsi_min):
             continue
         if f.rsi_max is not None and (q.rsi_14 is None or q.rsi_14 > f.rsi_max):
             continue
-        if f.macd_hist_min is not None and (q.macd_hist is None or q.macd_hist < f.macd_hist_min):
+        if f.macd_hist_min is not None and (
+            q.macd_hist is None or q.macd_hist < f.macd_hist_min
+        ):
             continue
-        if f.macd_hist_max is not None and (q.macd_hist is None or q.macd_hist > f.macd_hist_max):
+        if f.macd_hist_max is not None and (
+            q.macd_hist is None or q.macd_hist > f.macd_hist_max
+        ):
             continue
         if f.atr_min is not None and (q.atr_14 is None or q.atr_14 < f.atr_min):
             continue
         if f.atr_max is not None and (q.atr_14 is None or q.atr_14 > f.atr_max):
             continue
-        if f.rel_volume_min is not None and (q.rel_volume is None or q.rel_volume < f.rel_volume_min):
+        if f.rel_volume_min is not None and (
+            q.rel_volume is None or q.rel_volume < f.rel_volume_min
+        ):
             continue
         if f.tags:
             if not any(tag in q.tags for tag in f.tags):

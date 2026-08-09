@@ -41,7 +41,9 @@ async def get_quote(exchange: Exchange, symbol: str):
 
     raw = await redis.get(cache_key)
     if not raw:
-        raise HTTPException(status_code=404, detail=f"{exchange}:{symbol} not found in cache")
+        raise HTTPException(
+            status_code=404, detail=f"{exchange}:{symbol} not found in cache"
+        )
 
     tick_data = json.loads(raw)
     indicators = await compute_indicators(symbol, exchange.value)
@@ -58,12 +60,16 @@ async def get_quote(exchange: Exchange, symbol: str):
 # ─────────────────────────────────────────────────────────
 @router.get("/quotes", response_model=List[StockQuote])
 async def get_bulk_quotes(
-    symbols: str = Query(..., description="Comma-separated list e.g. NSE:RELIANCE,NSE:INFY"),
+    symbols: str = Query(
+        ..., description="Comma-separated list e.g. NSE:RELIANCE,NSE:INFY"
+    ),
 ):
     """Returns quotes for multiple symbols from Redis cache."""
     pairs = [s.strip().upper() for s in symbols.split(",") if ":" in s]
     if not pairs:
-        raise HTTPException(status_code=400, detail="Provide symbols as EXCHANGE:SYMBOL")
+        raise HTTPException(
+            status_code=400, detail="Provide symbols as EXCHANGE:SYMBOL"
+        )
     if len(pairs) > 100:
         raise HTTPException(status_code=400, detail="Max 100 symbols per request")
 
@@ -97,8 +103,11 @@ async def get_ohlcv(
     """
     symbol = symbol.upper()
     interval_map = {
-        "1m": "ohlcv_1m", "5m": "ohlcv_5m",
-        "15m": "ohlcv_15m", "1h": "ohlcv_1h", "1d": "ohlcv_1d",
+        "1m": "ohlcv_1m",
+        "5m": "ohlcv_5m",
+        "15m": "ohlcv_15m",
+        "1h": "ohlcv_1h",
+        "1d": "ohlcv_1d",
     }
     table = interval_map[interval]
     sql = f"""
@@ -117,9 +126,16 @@ async def get_ohlcv(
         raise HTTPException(status_code=404, detail="No OHLCV data found")
 
     # Return as list of lists [t, o, h, l, c, v] – compatible with most chart libs
-    bars = [[r["t"], r["open"], r["high"], r["low"], r["close"], r["volume"]] for r in rows]
+    bars = [
+        [r["t"], r["open"], r["high"], r["low"], r["close"], r["volume"]] for r in rows
+    ]
     bars.reverse()  # chronological order
-    return {"symbol": symbol, "exchange": exchange.value, "interval": interval, "bars": bars}
+    return {
+        "symbol": symbol,
+        "exchange": exchange.value,
+        "interval": interval,
+        "bars": bars,
+    }
 
 
 # ─────────────────────────────────────────────────────────

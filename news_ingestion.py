@@ -66,14 +66,48 @@ RSS_FEEDS = [
 #  Sentiment lexicon (simplified; replace with transformers)
 # ─────────────────────────────────────────────────────────
 _POSITIVE_WORDS = {
-    "surge", "rally", "gain", "rise", "jump", "record", "high", "beat",
-    "profit", "growth", "strong", "bullish", "upgrade", "outperform",
-    "recover", "soar", "boost", "positive", "upbeat", "expand",
+    "surge",
+    "rally",
+    "gain",
+    "rise",
+    "jump",
+    "record",
+    "high",
+    "beat",
+    "profit",
+    "growth",
+    "strong",
+    "bullish",
+    "upgrade",
+    "outperform",
+    "recover",
+    "soar",
+    "boost",
+    "positive",
+    "upbeat",
+    "expand",
 }
 _NEGATIVE_WORDS = {
-    "fall", "drop", "crash", "decline", "loss", "low", "miss", "cut",
-    "bearish", "downgrade", "underperform", "weak", "debt", "default",
-    "plunge", "concern", "risk", "sell-off", "negative", "contract",
+    "fall",
+    "drop",
+    "crash",
+    "decline",
+    "loss",
+    "low",
+    "miss",
+    "cut",
+    "bearish",
+    "downgrade",
+    "underperform",
+    "weak",
+    "debt",
+    "default",
+    "plunge",
+    "concern",
+    "risk",
+    "sell-off",
+    "negative",
+    "contract",
 }
 
 
@@ -98,7 +132,9 @@ def _extract_symbols(headline: str) -> List[str]:
     return candidates[:5]  # cap at 5 to avoid noise
 
 
-def _parse_feed_entry(entry: dict, source_name: str, source_type: NewsSource) -> Optional[NewsArticle]:
+def _parse_feed_entry(
+    entry: dict, source_name: str, source_type: NewsSource
+) -> Optional[NewsArticle]:
     headline = entry.get("title", "").strip()
     url = entry.get("link", "").strip()
     if not headline or not url:
@@ -108,6 +144,7 @@ def _parse_feed_entry(entry: dict, source_name: str, source_type: NewsSource) ->
     pub_struct = entry.get("published_parsed")
     if pub_struct:
         import calendar
+
         pub_dt = datetime.fromtimestamp(calendar.timegm(pub_struct), tz=timezone.utc)
     else:
         pub_dt = datetime.now(timezone.utc)
@@ -129,7 +166,9 @@ def _parse_feed_entry(entry: dict, source_name: str, source_type: NewsSource) ->
 # ─────────────────────────────────────────────────────────
 #  Async RSS fetcher
 # ─────────────────────────────────────────────────────────
-async def _fetch_feed(session: aiohttp.ClientSession, feed_conf: dict) -> List[NewsArticle]:
+async def _fetch_feed(
+    session: aiohttp.ClientSession, feed_conf: dict
+) -> List[NewsArticle]:
     url = feed_conf["url"]
     try:
         async with session.get(url, timeout=aiohttp.ClientTimeout(total=8)) as resp:
@@ -197,7 +236,10 @@ class NewsIngestionService:
 
     async def start(self):
         self._running = True
-        logger.info("News ingestion service started (interval=%ds)", settings.NEWS_REFRESH_SECONDS)
+        logger.info(
+            "News ingestion service started (interval=%ds)",
+            settings.NEWS_REFRESH_SECONDS,
+        )
         while self._running:
             try:
                 articles = await fetch_all_news()

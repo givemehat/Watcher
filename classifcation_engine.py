@@ -37,12 +37,12 @@ SLOPE_BULLISH_DEG = 3.0
 SLOPE_BEARISH_DEG = -3.0
 
 REL_VOLUME_BREAKOUT = 1.5
-PRICE_BB_BREAKOUT_FACTOR = 0.98      # within 2% of BB upper
+PRICE_BB_BREAKOUT_FACTOR = 0.98  # within 2% of BB upper
 
-VOL_STDDEV_HIGH = 0.35               # annualised vol > 35%
+VOL_STDDEV_HIGH = 0.35  # annualised vol > 35%
 
-LIQUIDITY_VOLUME_MIN = 50_000        # absolute minimum volume
-ATR_TO_PRICE_HIGH = 0.025            # ATR/price > 2.5%
+LIQUIDITY_VOLUME_MIN = 50_000  # absolute minimum volume
+ATR_TO_PRICE_HIGH = 0.025  # ATR/price > 2.5%
 
 
 # ─────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ def _is_bullish_momentum(q: StockQuote) -> bool:
     rsi_ok = q.rsi_14 is not None and q.rsi_14 > RSI_BULLISH_MIN
     macd_ok = q.macd_hist is not None and q.macd_hist > MACD_HIST_BULLISH
     slope_ok = q.slope_1d is not None and q.slope_1d > SLOPE_BULLISH_DEG
-    return sum([rsi_ok, macd_ok, slope_ok]) >= 2   # at least 2 of 3
+    return sum([rsi_ok, macd_ok, slope_ok]) >= 2  # at least 2 of 3
 
 
 def _is_bearish_momentum(q: StockQuote) -> bool:
@@ -64,10 +64,7 @@ def _is_bearish_momentum(q: StockQuote) -> bool:
 
 def _is_breakout_candidate(q: StockQuote) -> bool:
     vol_ok = q.rel_volume is not None and q.rel_volume > REL_VOLUME_BREAKOUT
-    price_ok = (
-        q.bb_upper is not None
-        and q.ltp >= q.bb_upper * PRICE_BB_BREAKOUT_FACTOR
-    )
+    price_ok = q.bb_upper is not None and q.ltp >= q.bb_upper * PRICE_BB_BREAKOUT_FACTOR
     return vol_ok and price_ok
 
 
@@ -87,10 +84,7 @@ def _is_trend_continuation(q: StockQuote) -> bool:
     slopes_agree = (
         q.slope_1d is not None
         and q.slope_1w is not None
-        and (
-            (q.slope_1d > 0 and q.slope_1w > 0)
-            or (q.slope_1d < 0 and q.slope_1w < 0)
-        )
+        and ((q.slope_1d > 0 and q.slope_1w > 0) or (q.slope_1d < 0 and q.slope_1w < 0))
     )
     rsi_neutral = q.rsi_14 is not None and 45 <= q.rsi_14 <= 65
     return slopes_agree and rsi_neutral

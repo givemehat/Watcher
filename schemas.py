@@ -55,12 +55,13 @@ class PriceRange(str, Enum):
 # ─────────────────────────────────────────────────────────
 class StockTick(BaseModel):
     """Single real-time tick from the feed"""
+
     model_config = ConfigDict(frozen=True)
 
     symbol: str
     exchange: Exchange
     timestamp: datetime
-    ltp: float                          # last traded price
+    ltp: float  # last traded price
     open: float
     high: float
     low: float
@@ -78,6 +79,7 @@ class StockTick(BaseModel):
 
 class StockQuote(BaseModel):
     """Enriched quote with indicators and classification"""
+
     model_config = ConfigDict(from_attributes=True)
 
     symbol: str
@@ -112,8 +114,8 @@ class StockQuote(BaseModel):
     bb_lower: Optional[float] = None
     vol_stddev: Optional[float] = None  # rolling volatility
     rel_volume: Optional[float] = None  # vol / avg_vol_20d
-    slope_1d: Optional[float] = None    # price slope theta, 1-day
-    slope_1w: Optional[float] = None    # price slope theta, 1-week
+    slope_1d: Optional[float] = None  # price slope theta, 1-day
+    slope_1w: Optional[float] = None  # price slope theta, 1-week
 
     # Classification
     tags: List[ClassificationTag] = []
@@ -133,7 +135,7 @@ class ScreenerFilter(BaseModel):
     # Momentum
     change_pct_min: Optional[float] = None  # e.g. +2 for gainers
     change_pct_max: Optional[float] = None
-    window: str = "day"                      # "1m", "5m", "15m", "day"
+    window: str = "day"  # "1m", "5m", "15m", "day"
 
     # Volume / liquidity
     volume_min: Optional[int] = None
@@ -178,7 +180,7 @@ class NewsArticle(BaseModel):
     url: str
     published_at: datetime
     sentiment: Sentiment = Sentiment.NEUTRAL
-    symbols: List[str] = []             # related tickers if detected
+    symbols: List[str] = []  # related tickers if detected
 
 
 class NewsResponse(BaseModel):
@@ -190,7 +192,7 @@ class NewsResponse(BaseModel):
 #  WebSocket messages
 # ─────────────────────────────────────────────────────────
 class WSSubscribeMsg(BaseModel):
-    action: str                         # "subscribe" | "unsubscribe"
+    action: str  # "subscribe" | "unsubscribe"
     symbols: List[str]
 
 
@@ -209,7 +211,7 @@ class WSErrorMsg(BaseModel):
 # ─────────────────────────────────────────────────────────
 class VolatilityCluster(BaseModel):
     symbol: str
-    regime: str                         # "low" | "medium" | "high"
+    regime: str  # "low" | "medium" | "high"
     garch_sigma: float
     ewm_vol: float
 

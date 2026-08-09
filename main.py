@@ -20,6 +20,7 @@ from services.news_ingestion import NewsIngestionService
 
 logger = logging.getLogger(__name__)
 
+
 # ─────────────────────────────────────────────────────────
 #  Lifespan: startup + shutdown
 # ─────────────────────────────────────────────────────────
@@ -81,11 +82,11 @@ def create_app() -> FastAPI:
     )
 
     # ── Routers ───────────────────────────────────────────
-    app.include_router(market.router,    prefix="/api/v1/market",    tags=["Market Data"])
-    app.include_router(screener.router,  prefix="/api/v1/screener",  tags=["Screener"])
-    app.include_router(news.router,      prefix="/api/v1/news",      tags=["News"])
+    app.include_router(market.router, prefix="/api/v1/market", tags=["Market Data"])
+    app.include_router(screener.router, prefix="/api/v1/screener", tags=["Screener"])
+    app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
     app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["Analytics"])
-    app.include_router(ws.router,        prefix="/ws",               tags=["WebSocket"])
+    app.include_router(ws.router, prefix="/ws", tags=["WebSocket"])
 
     return app
 
@@ -95,11 +96,12 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=8000,
         reload=False,
-        workers=1,           # single worker; use gunicorn+uvicorn for prod
+        workers=1,  # single worker; use gunicorn+uvicorn for prod
         log_level="info",
     )
