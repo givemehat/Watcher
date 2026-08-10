@@ -1,0 +1,41 @@
+name: Auto-Format Code
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install formatters
+        run: pip install black
+        
+      - name: Run Black
+        run: black . --quiet || true
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Run Prettier
+        run: npx prettier --write "**/*.{js,jsx,ts,tsx,json,css,scss,md}" || true
+        
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'style: auto-format code [skip ci]'
